@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>로그인</title>
+    <script>
+      async function login() {
+        const name = document.getElementById("name").value;
+        const drink = document.getElementById("drink").value;
+        const currentDrink = document.getElementById("currentDrink").value;
+
+        const response = await fetch("/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, drink, currentDrink }),
+        });
+
+        if (response.ok) {
+          window.location.href = "/chat.html";
+        } else {
+          alert("로그인 실패: 이름, 주량, 현재 음주량을 입력하세요.");
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="mainbox">
+      <h2 style="color: #f4934c">황서진의</h2>
+      <h1 style="color: #689f38">
+        주량<span style="color: #ff6363">경</span>보
+      </h1>
+      <div class="login">
+        <label>이름: <input type="text" id="name" /></label><br />
+        <label>주량: <input type="number" id="drink" /></label><br />
+        <label>현재 음주량: <input type="number" id="currentDrink" /></label
+        ><br />
+        <button class="loginbtn" onclick="login()">술 마시기</button>
+      </div>
+    </div>
+  </body>
+</html>

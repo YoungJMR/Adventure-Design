@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style2.css" />
+
+    <title>Chat & Drink Tracker</title>
+    <script defer src="/socket.io/socket.io.js"></script>
+    <script defer src="chat.js"></script>
+  </head>
+  <body>
+    <div class="mainbox">
+      <h2 style="color: #f4934c">황서진의</h2>
+      <h1 style="color: #689f38">
+        주량<span style="color: #ff6363">경</span>보
+      </h1>
+      <div>
+        <!-- <label>추가 음주량: <input type="number" id="drinkInput" /></label>
+        <button id="updateDrinkBtn">음주량 추가</button> -->
+      </div>
+      <h2>사용자 목록</h2>
+      <ul id="userList"></ul>
+      <h2>공지사항</h2>
+      <div
+        id="chatBox"
+        style="
+          background-color: white;
+          border: 1px solid #ccc;
+          height: 200px;
+          overflow-y: scroll;
+        "
+      ></div>
+      <input
+        type="text"
+        id="chatInput"
+        placeholder="공지사항을 입력하세요"
+        style="width: 385px"
+        ;
+      />
+      <button class="loginbtn" id="sendChatBtn">전체 공지하기</button>
+      <br />
+      <button class="loginbtn" onclick="logout()">로그아웃</button>
+    </div>
+  </body>
+</html>
