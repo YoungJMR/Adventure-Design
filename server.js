@@ -127,40 +127,48 @@ noble.on("discover", (peripheral) => {
 
           // BLE 데이터 수신 처리
           characteristic.on("data", (data, isNotification) => {
-            weight = parseFloat(data.toString());
-            console.log("수신한 무게 데이터:", weight);
-          });
+            try {
+              // 데이터 변환
+              weight = parseFloat(data.toString());
+              console.log("수신한 무게 데이터:", weight);
 
-          // 사용자 음주량 업데이트 로직
-          let addedDrink = 0;
-          if (weight >= 60) {
-            addedDrink = 1;
-          } else if (weight > 10 && weight < 60) {
-            addedDrink = 0.5;
-          }
-
-          // 사용자 상태 업데이트 및 전송
-          Object.values(users).forEach((user) => {
-            if (user) {
-              user.currentDrink += addedDrink; // 음주량 증가
-              const drinkPercentage = (user.currentDrink / user.drink) * 100;
-
-              if (drinkPercentage < 50) {
-                user.status = "정상";
-              } else if (drinkPercentage >= 50 && drinkPercentage < 100) {
-                user.status = "주의";
+              // 음주량 계산 로직
+              let addedDrink = 0;
+              if (weight >= 0.6) {
+                addedDrink = 1;
+              } else if (weight > 0.01 && weight < 0.6) {
+                addedDrink = 0.5;
               } else {
-                user.status = "위험";
+                console.warn("유효하지 않은 무게 데이터:", weight);
               }
 
-              console.log(
-                `${user.name}님: 음주량 ${user.currentDrink}, 상태 ${user.status}`
-              );
+              // 사용자 상태 업데이트
+              Object.values(users).forEach((user) => {
+                if (user) {
+                  user.currentDrink += addedDrink; // 음주량 증가
+                  const drinkPercentage =
+                    (user.currentDrink / user.drink) * 100;
+
+                  if (drinkPercentage < 50) {
+                    user.status = "정상";
+                  } else if (drinkPercentage >= 50 && drinkPercentage < 100) {
+                    user.status = "주의";
+                  } else {
+                    user.status = "위험";
+                  }
+
+                  console.log(
+                    `${user.name}님: 음주량 ${user.currentDrink}, 상태 ${user.status}`
+                  );
+                }
+              });
+
+              // 사용자 상태 클라이언트로 업데이트
+              io.emit("updateUserList", Object.values(users));
+            } catch (error) {
+              console.error("데이터 처리 오류:", error);
             }
           });
-
-          // 사용자 상태 클라이언트로 업데이트
-          io.emit("updateUserList", Object.values(users));
 
           // BLE 알림 구독
           characteristic.subscribe((error) => {
@@ -176,6 +184,10 @@ noble.on("discover", (peripheral) => {
               Object.values(users).forEach((user) => {
                 if (user) {
                   const message = `a=${user.currentDrink}\nb=${user.drink}`;
+
+                  // 로그 추가: BLE로 보낼 메시지를 출력
+                  console.log(`BLE로 보낼 메시지: ${message}`);
+
                   characteristic.write(Buffer.from(message), false, (error) => {
                     if (error) {
                       console.error("전송 오류:", error);
