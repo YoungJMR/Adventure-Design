@@ -165,22 +165,8 @@ noble.on("discover", (peripheral) => {
 
               // 사용자 상태 클라이언트로 업데이트
               io.emit("updateUserList", Object.values(users));
-            } catch (error) {
-              console.error("데이터 처리 오류:", error);
-            }
-          });
 
-          // BLE 알림 구독
-          characteristic.subscribe((error) => {
-            if (error) {
-              console.error("구독 오류:", error);
-              return;
-            }
-
-            console.log("알림 구독 시작");
-
-            // 2초마다 BLE 장치로 사용자 음주량 정보 전송
-            setInterval(() => {
+              // 새로운 데이터 수신 시 BLE로 값 전송
               Object.values(users).forEach((user) => {
                 if (user) {
                   const message = `a=${user.currentDrink}\nb=${user.drink}`;
@@ -197,7 +183,19 @@ noble.on("discover", (peripheral) => {
                   });
                 }
               });
-            }, 2000);
+            } catch (error) {
+              console.error("데이터 처리 오류:", error);
+            }
+          });
+
+          // BLE 알림 구독
+          characteristic.subscribe((error) => {
+            if (error) {
+              console.error("구독 오류:", error);
+              return;
+            }
+
+            console.log("알림 구독 시작");
           });
         }
       );
