@@ -1,4 +1,4 @@
-const socket = io();
+const socket = io(); // 서버와 WebSocket 연결을 설정하기 위한 Socket.IO 클라이언트 객체 생성
 
 // 채팅 메시지 전송
 document.getElementById("sendChatBtn").addEventListener("click", () => {
@@ -31,9 +31,9 @@ socket.on("chatMessage", (msg) => {
 async function logout() {
   const response = await fetch("/logout", { method: "POST" });
   if (response.ok) {
-    window.location.href = "/";
+    window.location.href = "/"; // 로그아웃 성공 시 로그인 페이지로 이동
   } else {
-    alert("로그아웃 실패");
+    alert("로그아웃 실패"); // 로그아웃 실패 시 경고 메시지 표시
   }
 }
 

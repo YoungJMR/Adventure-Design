@@ -1,4 +1,4 @@
-const socket = io();
+const socket = io(); // 서버와 WebSocket 연결을 설정하기 위한 Socket.IO 클라이언트 객체 생성
 
 // 채팅 메시지 전송
 document.getElementById("sendChatBtn").addEventListener("click", () => {
@@ -13,6 +13,7 @@ document.getElementById("sendChatBtn").addEventListener("click", () => {
 // 사용자 목록 업데이트
 socket.on("updateUserList", (users) => {
   const userList = document.getElementById("userList");
+  // 서버에서 전달받은 사용자 정보를 이용해 사용자 목록 HTML을 생성
   userList.innerHTML = users
     .map(
       (user) =>
